@@ -1,0 +1,10 @@
+.form {
+  display: inherit;
+  flex-direction: inherit;
+  gap: inherit;
+}
+
+.label {
+  display: flex;
+  justify-content: flex-end;
+}

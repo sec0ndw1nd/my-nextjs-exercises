@@ -17,6 +17,18 @@ app.get('/', (req, res) => {
   res.send('hello express!');
 });
 
+app.get('/user', (req, res) => {
+  try {
+    if (req.user) {
+      // filter user info
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 app.post('/user/login', (req, res) => {
   // POST -> req.body is the data from front
   console.log(req.body);
@@ -30,6 +42,7 @@ app.post('/user/login', (req, res) => {
     res.status(401).send('you are not an admin.');
   }
 });
+
 app.post('/user/logout', (req, res) => {
   // POST -> req.body is the data from front
   console.log(req.body);
