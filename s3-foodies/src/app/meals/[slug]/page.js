@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { getMeal } from '../../../../lib/meals';
+import { getMeal } from '../../../lib/meals';
 import styles from './page.module.css';
 import { notFound } from 'next/navigation';
 
