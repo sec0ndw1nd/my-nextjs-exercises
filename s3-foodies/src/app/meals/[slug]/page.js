@@ -3,6 +3,19 @@ import { getMeal } from '../../../lib/meals';
 import styles from './page.module.css';
 import { notFound } from 'next/navigation';
 
+// dynamic metadata
+export async function generateMetadata({ params }) {
+  const meal = getMeal(params.slug);
+  if (!meal) {
+    notFound(); // show not-found.js
+  }
+
+  return {
+    title: meal.title,
+    description: meal.summary,
+  };
+}
+
 export default function MealDetailsPage({ params }) {
   const meal = getMeal(params.slug);
   if (!meal) {
