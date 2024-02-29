@@ -2,12 +2,13 @@
 
 import { redirect } from 'next/navigation';
 import { saveMeal } from './meals';
+import { revalidatePath } from 'next/cache';
 
 function isInvalidText(text) {
   return !text || text.trim() === '';
 }
 
-export async function shareMeal(formData) {
+export async function shareMeal(prevState, formData) {
   const meal = {
     title: formData.get('title'),
     summary: formData.get('summary'),
@@ -27,11 +28,15 @@ export async function shareMeal(formData) {
     !meal.image ||
     meal.image.size === 0
   ) {
-    throw new Error('Invalid Input');
+    //todo: 폼 에러시 에러페이지 이동보다는 폼 자체에 에러를 표기하는 것이 더 나은 user experience
+    // throw new Error('Invalid Input');
+
+    return {
+      message: 'Invalid input.',
+    };
   }
 
-  //todo: 폼 에러시 에러페이지 이동보다는 폼 자체에 에러를 표기하는 것이 더 나은 user experience
-
   await saveMeal(meal);
+  revalidatePath('/meals');
   redirect('/meals');
 }
