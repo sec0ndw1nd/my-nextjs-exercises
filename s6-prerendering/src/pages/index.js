@@ -1,13 +1,13 @@
 import fs from 'fs/promises';
-import Link from 'next/link';
 import path from 'path';
+import Link from 'next/link';
 
 export default function HomePage({ products }) {
   return (
     <ul>
       {products.map((prod) => (
         <li key={prod.id}>
-          <Link href={`/${prod.id}`}>{prod.title}</Link>
+          <Link href={`/products/${prod.id}`}>{prod.title}</Link>
         </li>
       ))}
     </ul>
@@ -29,6 +29,6 @@ export async function getStaticProps() {
     props: {
       products: data.products,
     },
-    revalidate: 10,
+    revalidate: 5,
   };
 }
