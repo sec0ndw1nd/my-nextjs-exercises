@@ -7,6 +7,7 @@ import ResultsTitle from '@/components/events/ResultsTitle';
 import Button from '@/components/ui/Button';
 import ErrorAlert from '@/components/ui/ErrorAlert';
 import baseUrl from '../api/baseUrl';
+import Head from 'next/head';
 
 const isInvalid = ({ year, month }) => {
   return (
@@ -39,8 +40,20 @@ export default function FilteredEventsPage() {
     }
   }, [data]);
 
+  let pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content={`A list of filtered events.`} />
+    </Head>
+  );
+
   if (!loadedEvents) {
-    return <p className="center">Loading...</p>;
+    return (
+      <>
+        {pageHeadData}
+        <p className="center">Loading...</p>;
+      </>
+    );
   }
 
   const filteredYear = +slugs[0];
@@ -48,6 +61,7 @@ export default function FilteredEventsPage() {
   if (isInvalid({ year: filteredYear, month: filteredMonth }) || error) {
     return (
       <>
+        {pageHeadData}
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -68,6 +82,7 @@ export default function FilteredEventsPage() {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <>
+        {pageHeadData}
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
@@ -78,9 +93,19 @@ export default function FilteredEventsPage() {
     );
   }
 
+  pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`All events for ${filteredMonth}/${filteredYear}.`}
+      />
+    </Head>
+  );
   const date = new Date(filteredYear, filteredMonth - 1);
   return (
     <>
+      {pageHeadData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </>

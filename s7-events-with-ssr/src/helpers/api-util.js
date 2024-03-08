@@ -2,6 +2,11 @@ import baseUrl from '@/pages/api/baseUrl';
 
 export async function getAllEvents() {
   const response = await fetch(baseUrl + '/events.json');
+  if (!response.ok) {
+    console.error('!!!!!!!!! ERR: response', response.status);
+    throw new Error(`server error: ${response.status}`);
+  }
+
   const data = await response.json();
 
   const events = [];
