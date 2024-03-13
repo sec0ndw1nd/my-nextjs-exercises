@@ -2,7 +2,7 @@ import { getEventById, getFeaturedEvents } from '@/helpers/api-util';
 import EventContent from '@/components/event-detail/event-content';
 import EventLogistics from '@/components/event-detail/event-logistics';
 import EventSummary from '@/components/event-detail/event-summary';
-import Comments from '@/components/input/comments';
+import Comments from '@/components/input/Comments';
 
 export default function EventDetailPage({ selectedEvent: event }) {
   return (

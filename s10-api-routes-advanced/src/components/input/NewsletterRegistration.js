@@ -1,10 +1,16 @@
+import { useRef } from 'react';
 import styles from './NewsletterRegistration.module.css';
 
 export default function NewsletterRegistration() {
+  const emailInputRef = useRef();
+
   const registrationHandler = (e) => {
     e.preventDefault();
 
+    const enteredEmail = emailInputRef.current.value;
+
     // fetch user input (state or refs)
+
     // optional: validate input
     // send valid data to API
   };
@@ -19,6 +25,7 @@ export default function NewsletterRegistration() {
             id="email"
             placeholder="Your email"
             aria-label="Your email"
+            ref={emailInputRef}
           />
           <button>Register</button>
         </div>
