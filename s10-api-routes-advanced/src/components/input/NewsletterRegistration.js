@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import styles from './NewsletterRegistration.module.css';
 
 export default function NewsletterRegistration() {
+  const [message, setMessage] = useState();
   const emailInputRef = useRef();
 
   const registrationHandler = (e) => {
@@ -9,10 +10,15 @@ export default function NewsletterRegistration() {
 
     const enteredEmail = emailInputRef.current.value;
 
-    // fetch user input (state or refs)
-
-    // optional: validate input
-    // send valid data to API
+    fetch('/api/newsletter', {
+      method: 'POST',
+      body: JSON.stringify({ email: enteredEmail }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message));
   };
 
   return (
@@ -29,6 +35,7 @@ export default function NewsletterRegistration() {
           />
           <button>Register</button>
         </div>
+        {message && <p>{message}</p>}
       </form>
     </section>
   );
