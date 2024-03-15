@@ -1,5 +1,10 @@
-import { MongoClient } from 'mongodb';
-import { mongoUrl } from './baseUrl';
+import { connectDatabase, insertDocument } from '@/helpers/db-util';
+
+async function checkExistingEmail(client, email) {
+  const db = client.db();
+  const result = await db.collection('emails').find({ email: email }).toArray();
+  return result.length > 0;
+}
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -15,21 +20,29 @@ export default async function handler(req, res) {
       return;
     }
 
-    const client = await MongoClient.connect(mongoUrl);
-    const db = client.db();
-
-    const isExistEmail =
-      (await db.collection('emails').find({ email: userEmail }).toArray())
-        .length > 0;
-
-    if (!isExistEmail) {
-      await db.collection('emails').insertOne({ email: userEmail });
+    // connect db
+    let client;
+    try {
+      client = await connectDatabase();
+    } catch (error) {
+      res.status(500).json({ message: 'Connecting to the db failed!' });
+      return;
     }
 
-    client.close();
+    // insert email if not existing
+    try {
+      const isExistingEmail = await checkExistingEmail(client, userEmail);
+      if (!isExistingEmail) {
+        await insertDocument(client, 'emails', { email: userEmail });
+      }
 
-    res.status(201).json({
-      message: isExistEmail ? 'You already signed up.' : 'Signed up!',
-    });
+      res.status(201).json({
+        message: isExistingEmail ? 'You already signed up.' : 'Signed up!',
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Inserting data failed!' });
+    } finally {
+      client.close();
+    }
   }
 }

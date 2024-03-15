@@ -4,15 +4,19 @@ import CommentList from './CommentList';
 import NewComment from './NewComment';
 import styles from './Comments.module.css';
 
+function getComments(eventId, callback) {
+  fetch(`/api/comments/${eventId}`)
+    .then((res) => res.json())
+    .then((data) => callback(data.comments));
+}
+
 export default function Comments({ eventId }) {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     if (showComments) {
-      fetch(`/api/comments/${eventId}`)
-        .then((res) => res.json())
-        .then((data) => setComments(data.comments));
+      getComments(eventId, setComments);
     }
   }, [showComments, eventId]);
 
@@ -31,7 +35,10 @@ export default function Comments({ eventId }) {
       },
     })
       .then((res) => res.json())
-      .then((data) => console.log('returned:', data));
+      .then((data) => {
+        console.log('returned:', data);
+        getComments(eventId, setComments);
+      });
   };
 
   console.log(comments);

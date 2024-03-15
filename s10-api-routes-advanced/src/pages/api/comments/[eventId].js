@@ -1,13 +1,23 @@
-import { MongoClient } from 'mongodb';
-import { mongoUrl } from '../baseUrl';
+import { connectDatabase, insertDocument } from '@/helpers/db-util';
+
+async function getComments(client) {
+  const db = client.db();
+  return await db.collection('comments').find().sort({ _id: -1 }).toArray();
+}
 
 export default async function handler(req, res) {
   const { eventId } = req.query;
 
   console.log('********** From Client:', req.body, eventId);
 
-  const client = await MongoClient.connect(mongoUrl);
-  const db = client.db();
+  // connect db
+  let client;
+  try {
+    client = await connectDatabase();
+  } catch (error) {
+    res.status(500).json({ message: 'Connecting to the db failed!' });
+    return;
+  }
 
   if (req.method === 'POST') {
     const { email, name, text } = req.body;
@@ -31,19 +41,26 @@ export default async function handler(req, res) {
       text,
     };
 
-    const result = await db.collection('comments').insertOne(newComment);
-    newComment.id = result.insertedId;
-
-    res.status(201).json({ message: 'Added comment.', comment: newComment });
+    try {
+      const result = await insertDocument(client, 'comments', newComment);
+      newComment._id = result.insertedId;
+      res.status(201).json({ message: 'Added comment.', comment: newComment });
+    } catch (error) {
+      res.status(500).json({ message: 'Inserting data failed!' });
+    } finally {
+      client.close();
+    }
   } else if (req.method === 'GET') {
-    const comments = await db
-      .collection('comments')
-      .find()
-      .sort({ _id: -1 })
-      .toArray();
-
-    res.status(200).json({ comments });
+    try {
+      const comments = await getComments(client);
+      const filteredComments = comments.filter(
+        (comm) => comm.eventId === eventId,
+      );
+      res.status(200).json({ comments: filteredComments });
+    } catch (error) {
+      res.status(500).json({ message: 'Getting comments failed!' });
+    } finally {
+      client.close();
+    }
   }
-
-  client.close();
 }
