@@ -1,14 +1,21 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import styles from './NewsletterRegistration.module.css';
+import NotificationContext from '@/store/notification-context';
 
 export default function NewsletterRegistration() {
-  const [message, setMessage] = useState();
+  const { showNotification } = useContext(NotificationContext);
   const emailInputRef = useRef();
 
   const registrationHandler = (e) => {
     e.preventDefault();
 
     const enteredEmail = emailInputRef.current.value;
+
+    showNotification({
+      title: 'Signing up...',
+      message: 'Registering for newsletter.',
+      status: 'pending',
+    });
 
     fetch('/api/newsletter', {
       method: 'POST',
@@ -17,8 +24,29 @@ export default function NewsletterRegistration() {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message));
+      .then((res) => {
+        // success
+        if (res.ok) return res.json();
+
+        // failed
+        return res.json().then((data) => {
+          throw new Error(data.message || 'Something went wrong!');
+        });
+      })
+      .then((data) => {
+        showNotification({
+          title: 'Success!',
+          message: data.message || 'Successfully registered for newsletter!',
+          status: 'success',
+        });
+      })
+      .catch((error) => {
+        showNotification({
+          title: 'Error!',
+          message: error.message || 'Something went wrong!',
+          status: 'error',
+        });
+      });
   };
 
   return (
@@ -35,7 +63,6 @@ export default function NewsletterRegistration() {
           />
           <button>Register</button>
         </div>
-        {message && <p>{message}</p>}
       </form>
     </section>
   );

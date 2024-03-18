@@ -37,7 +37,9 @@ export default async function handler(req, res) {
       }
 
       res.status(201).json({
-        message: isExistingEmail ? 'You already signed up.' : 'Signed up!',
+        message: isExistingEmail
+          ? 'You already signed up.'
+          : 'Successfully registered for newsletter!',
       });
     } catch (error) {
       res.status(500).json({ message: 'Inserting data failed!' });
