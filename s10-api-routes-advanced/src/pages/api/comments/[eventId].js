@@ -44,7 +44,12 @@ export default async function handler(req, res) {
     try {
       const result = await insertDocument(client, 'comments', newComment);
       newComment._id = result.insertedId;
-      res.status(201).json({ message: 'Added comment.', comment: newComment });
+      res
+        .status(201)
+        .json({
+          message: 'Your comment submitted successfully!',
+          comment: newComment,
+        });
     } catch (error) {
       res.status(500).json({ message: 'Inserting data failed!' });
     } finally {
