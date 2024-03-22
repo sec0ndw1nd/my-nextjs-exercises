@@ -1,8 +1,28 @@
 import FeaturedPosts from '@/components/home-page/FeaturedPosts';
 import Hero from '@/components/home-page/Hero';
+import { getFeaturedPosts } from '@/lib/posts-util';
 
-// { title, image, excerpt, date, slug }
-const DUMMY_POSTS = [
+export default function HomePage({ posts }) {
+  return (
+    <>
+      <Hero />
+      <FeaturedPosts posts={posts} />
+    </>
+  );
+}
+
+export function getStaticProps() {
+  const featuredPosts = getFeaturedPosts();
+
+  return {
+    props: {
+      posts: featuredPosts,
+    },
+    revalidate: 60,
+  };
+}
+
+/* const DUMMY_POSTS = [
   {
     slug: 'getting-started-with-nextjs',
     title: 'Getting Started With Nextjs',
@@ -27,13 +47,4 @@ const DUMMY_POSTS = [
       'NextJS is a the React framework for production - it makes building fullstack React apps and sites a breeze and ships with built-in SSR.',
     date: '2024-03-21',
   },
-];
-
-export default function HomePage() {
-  return (
-    <>
-      <Hero />
-      <FeaturedPosts posts={DUMMY_POSTS} />
-    </>
-  );
-}
+]; */
