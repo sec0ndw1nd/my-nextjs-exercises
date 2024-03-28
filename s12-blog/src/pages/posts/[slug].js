@@ -1,9 +1,15 @@
+import Head from 'next/head';
+
 import PostContent from '@/components/posts/post-detail/PostContent';
 import { getPostData, getPostsFiles } from '@/lib/posts-util';
 
 export default function PostDetailPage({ post }) {
   return (
     <>
+      <Head>
+        <title>Ted Blog | {post.title}</title>
+        <meta name="description" content={post.excerpt} />
+      </Head>
       <PostContent post={post} />
     </>
   );
