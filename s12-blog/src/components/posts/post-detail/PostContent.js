@@ -13,17 +13,6 @@ SyntaxHighlighter.registerLanguage('css', css);
 
 export default function PostContent({ post }) {
   const customMarkdown = {
-    /* img(image) {
-      return (
-        <Image
-          src={`/images/posts/${post.slug}/${image.src}`}
-          alt={image.alt}
-          width={600}
-          height={300}
-        />
-      );
-    }, */
-
     p({ node, children }) {
       // override if it's an image in paragraph
       if (node.children[0].tagName === 'img') {
@@ -65,11 +54,3 @@ export default function PostContent({ post }) {
     </article>
   );
 }
-
-/* const DUMMY_POST = {
-  slug: 'getting-started-with-nextjs',
-  title: 'Getting Started With Nextjs',
-  image: 'getting-started-nextjs.png',
-  date: '2024-03-21',
-  content: '# This is a first post!',
-}; */
