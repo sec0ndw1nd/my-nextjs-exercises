@@ -46,7 +46,6 @@ export default function PostContent({ post }) {
 
     code({ children, className }) {
       const lang = className.split('language-')[1];
-      console.log(lang);
 
       return (
         <SyntaxHighlighter style={atomDark} language={lang}>

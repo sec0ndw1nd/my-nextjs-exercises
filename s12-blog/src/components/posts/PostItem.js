@@ -3,6 +3,8 @@ import Image from 'next/image';
 
 import styles from './PostItem.module.css';
 
+const imageStyle = { width: '100%', height: 'auto' };
+
 export default function PostItem({ post }) {
   const { title, image, excerpt, date, slug } = post;
 
@@ -21,7 +23,7 @@ export default function PostItem({ post }) {
             alt={title}
             width={300}
             height={200}
-            layout="responsive"
+            style={imageStyle}
           />
         </div>
         <div className={styles.content}>
