@@ -1,10 +1,15 @@
 import Image from 'next/image';
 import Markdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import atomDark from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
+import js from 'react-syntax-highlighter/dist/cjs/languages/prism/javascript';
+import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css';
 
 import PostHeader from './PostHeader';
 import styles from './PostContent.module.css';
+
+SyntaxHighlighter.registerLanguage('js', js);
+SyntaxHighlighter.registerLanguage('css', css);
 
 export default function PostContent({ post }) {
   const customMarkdown = {
@@ -39,11 +44,13 @@ export default function PostContent({ post }) {
       return <p>{children}</p>;
     },
 
-    code(props) {
-      console.log(props);
+    code({ children, className }) {
+      const lang = className.split('language-')[1];
+      console.log(lang);
+
       return (
-        <SyntaxHighlighter style={atomDark} language="javascript">
-          {props.children}
+        <SyntaxHighlighter style={atomDark} language={lang}>
+          {children}
         </SyntaxHighlighter>
       );
     },

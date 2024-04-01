@@ -7,7 +7,7 @@ export default function PostDetailPage({ post }) {
   return (
     <>
       <Head>
-        <title>Ted Blog | {post.title}</title>
+        <title>{`Ted Blog | ${post.title}`}</title>
         <meta name="description" content={post.excerpt} />
       </Head>
       <PostContent post={post} />

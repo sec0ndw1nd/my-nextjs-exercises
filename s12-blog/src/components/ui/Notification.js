@@ -1,4 +1,4 @@
-import ReactDOM, { createPortal } from 'react-dom';
+import { createPortal } from 'react-dom';
 
 import classes from './Notification.module.css';
 
