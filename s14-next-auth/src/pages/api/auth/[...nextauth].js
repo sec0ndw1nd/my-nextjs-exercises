@@ -6,6 +6,8 @@ import { verifyPassword } from '@/lib/auth';
 export default NextAuth({
   providers: [
     CredentialsProvider({
+      // NextAuth에서 제공하는 Login form을 사용하려면 아래 주석을 사용
+      /* 
       // The name to display on the sign in form (e.g. "Sign in with...")
       name: 'Credentials',
       // `credentials` is used to generate a form on the sign in page.
@@ -15,7 +17,10 @@ export default NextAuth({
       credentials: {
         username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
         password: { label: 'Password', type: 'password' },
-      },
+      }, 
+      */
+
+      // custom login form을 사용하려면
       async authorize(credentials, req) {
         const client = await connectToDatabase();
         const usersCollection = client.db().collection('users');
@@ -28,10 +33,15 @@ export default NextAuth({
           throw new Error('No user found!');
         }
 
-        const isValid = verifyPassword(credentials.password, user.password);
+        const isValid = await verifyPassword(
+          credentials.password,
+          user.password,
+        );
         if (!isValid) {
           client.close();
-          throw new Error('Could not log you in!');
+          throw new Error(
+            'Could not log you in! Check your email or password again.',
+          );
         }
 
         client.close();
@@ -39,4 +49,11 @@ export default NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async signIn(props) {
+      // console.log(props);
+      console.log('signIn called!!!! check out props');
+      return true;
+    },
+  },
 });
