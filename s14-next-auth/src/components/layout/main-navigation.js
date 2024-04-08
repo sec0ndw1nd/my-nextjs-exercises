@@ -7,12 +7,10 @@ function MainNavigation() {
   // status = 'loading' | 'authenticated' | 'unauthenticated'
   const { data: session, status } = useSession();
 
-  const isLoading = status === 'loading';
+  const isAuthLoading = status === 'loading';
   const isAuthenticated = status === 'authenticated';
 
-  const logoutHandler = () => {
-    signOut();
-  };
+  const logoutHandler = () => signOut();
 
   console.log('session:', session);
   console.log('status:', status);
@@ -24,7 +22,7 @@ function MainNavigation() {
       </Link>
       <nav>
         <ul>
-          {!isLoading && isAuthenticated && (
+          {!isAuthLoading && isAuthenticated && (
             <>
               <li>
                 <Link href="/profile">Profile</Link>
@@ -36,7 +34,7 @@ function MainNavigation() {
               </li>
             </>
           )}
-          {!isLoading && !isAuthenticated && (
+          {!isAuthLoading && !isAuthenticated && (
             <li>
               <Link href="/auth">Login</Link>
             </li>
