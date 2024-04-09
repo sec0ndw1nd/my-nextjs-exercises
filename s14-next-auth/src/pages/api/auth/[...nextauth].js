@@ -3,7 +3,8 @@ import NextAuth from 'next-auth';
 import connectToDatabase from '@/lib/db';
 import { verifyPassword } from '@/lib/auth';
 
-export default NextAuth({
+export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       // NextAuth에서 제공하는 Login form을 사용하려면 아래 주석을 사용
@@ -49,14 +50,13 @@ export default NextAuth({
       },
     }),
   ],
-  callbacks: {
+  /* callbacks: {
     async signIn(props) {
       // console.log(props);
       console.log('signIn called!!!! check out props');
       return true;
     },
-  },
-  pages: {
-    signIn: '/auth/signin',
-  },
-});
+  }, */
+};
+
+export default NextAuth(authOptions);
